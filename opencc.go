@@ -3,13 +3,10 @@ package gocc
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"reflect"
-	"runtime"
 	"strings"
 
 	"github.com/liuzl/da"
@@ -17,21 +14,10 @@ import (
 
 var (
 	// Dir is the parent dir for config and dictionary
-	Dir       = flag.String("dir", defaultDir(), "dict dir")
+	Dir       *string
 	configDir = "config"
 	dictDir   = "dictionary"
 )
-
-func defaultDir() string {
-	if runtime.GOOS == "windows" {
-		return `C:\gocc\`
-	}
-	if goPath, ok := os.LookupEnv("GOPATH"); ok {
-		return goPath + "/src/github.com/liuzl/gocc/"
-	} else {
-		return `/usr/local/share/gocc/`
-	}
-}
 
 // Group holds a sequence of dicts
 type Group struct {
@@ -53,6 +39,10 @@ type OpenCC struct {
 var conversions = map[string]struct{}{
 	"hk2s": {}, "s2hk": {}, "s2t": {}, "s2tw": {}, "s2twp": {},
 	"t2hk": {}, "t2s": {}, "t2tw": {}, "tw2s": {}, "tw2sp": {},
+}
+
+func InitDir(dir string) {
+	Dir = &dir
 }
 
 // New construct an instance of OpenCC.
